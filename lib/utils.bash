@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for cyber.
 GH_REPO="https://github.com/fubark/cyber"
 TOOL_NAME="cyber"
 TOOL_TEST="cyber --help"
@@ -31,18 +30,17 @@ list_github_tags() {
 }
 
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
 	# Change this function if cyber has other means of determining installable versions.
 	list_github_tags
 }
 
 download_release() {
-	local version filename url
-	version="$1"
-	filename="$2"
+	local platform version filename url
+	platform="$1"
+	version="$2"
+	filename="$3"
 
-	# TODO: Adapt the release URL convention for cyber
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	url="$GH_REPO/releases/download/${version}/cyber-${platform}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -61,7 +59,6 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-		# TODO: Assert cyber executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
